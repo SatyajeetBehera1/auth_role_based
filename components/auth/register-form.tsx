@@ -19,9 +19,9 @@ import {
 import { Input } from "../ui/input";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-sucess";
-import { login } from "@/actions/login";
+import { register } from "@/actions/register";
 
-export const ResisterForm = () => {
+export const RegisterForm = () => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [sucess, setSucess] = useState<string | undefined>("");
@@ -29,9 +29,9 @@ export const ResisterForm = () => {
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
+      name: "",
       email: "",
       password: "",
-      name: "",
     },
   });
 
@@ -39,7 +39,7 @@ export const ResisterForm = () => {
     setError("");
     setSucess("");
     startTransition(() => {
-      login(values).then((data) => {
+      register(values).then((data) => {
         setError(data.error);
         setSucess(data.sucess);
       });
@@ -48,14 +48,31 @@ export const ResisterForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Welcome back"
-      backButtonLabel="Don't have an account?"
-      backButtonHref="/auth/register"
+      headerLabel="Create an Account"
+      backButtonLabel="Already have an Account?"
+      backButtonHref="/auth/login"
       showSocial
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="John Doe"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -74,8 +91,6 @@ export const ResisterForm = () => {
                 </FormItem>
               )}
             />
-          </div>
-          <div className="space-y-4">
             <FormField
               control={form.control}
               name="password"
@@ -86,42 +101,20 @@ export const ResisterForm = () => {
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="********"
+                      placeholder="******"
                       type="password"
                     />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )} 
+              )}
             />
           </div>
-          <div className="space-y-4">
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder="John Doe"
-                      type="name"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )} 
-            />
-          </div>
-          <FormError message={error}></FormError>
-          <FormSuccess message={sucess}></FormSuccess>
-          <div>
-            <Button type="submit" className="w-full">
-              LogIn
-            </Button>
-          </div>
+          <FormError message={error} />
+          <FormSuccess message={sucess} />
+          <Button disabled={isPending} type="submit" className="w-full">
+            Create an account
+          </Button>
         </form>
       </Form>
     </CardWrapper>
