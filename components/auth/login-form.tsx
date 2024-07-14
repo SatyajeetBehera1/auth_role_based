@@ -17,8 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-sucess";
+import { login } from "@/actions/login";
 
 export const LoginForm = () => {
+  const [isPending, startTransition] = useTransition();
+  const [error, setError] = useState<string | undefined>("");
+  const [sucess, setSucess] = useState<string | undefined>("");
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -26,6 +33,17 @@ export const LoginForm = () => {
       password: "",
     },
   });
+
+  const onSubmit = (values: z.infer<typeof LoginSchema>) => {
+    setError("");
+    setSucess("");
+    startTransition(() => {
+      login(values).then((data) => {
+        setError(data.error);
+        setSucess(data.sucess);
+      });
+    });
+  };
 
   return (
     <CardWrapper
@@ -35,7 +53,7 @@ export const LoginForm = () => {
       showSocial
     >
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(() => {})} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
             <FormField
               control={form.control}
@@ -46,6 +64,7 @@ export const LoginForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       placeholder="john.doe@example.com"
                       type="email"
                     />
@@ -63,16 +82,23 @@ export const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="********" type="password" />
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="********"
+                      type="password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
-              )}
+              )} 
             />
           </div>
+          <FormError message={error}></FormError>
+          <FormSuccess message={sucess}></FormSuccess>
           <div>
             <Button type="submit" className="w-full">
-              Sign In
+              LogIn
             </Button>
           </div>
         </form>
