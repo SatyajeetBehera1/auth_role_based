@@ -1,6 +1,7 @@
 "use server"
 import * as z from "zod"
 import * as bcrypt from "bcryptjs"
+import { generateVerificationToken } from "@/lib/tokens"
 
 import { RegisterSchema } from "@/schemas"
 import { db } from "@/lib/db"
