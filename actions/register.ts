@@ -37,8 +37,10 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
             password:hashedPassword,
         }
     })
+
+    const verificationToken = await generateVerificationToken(email)
     
     return {
-        sucess: "You have make a ID in our Database"
+        sucess: "Confirmation Email sent"
     }
 }
