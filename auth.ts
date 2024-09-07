@@ -20,17 +20,17 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         }
     },
     callbacks: {
-        // async signIn({ user }) {
-            
-        //     const existingUser = await getUserById(user.id);
-        //     console.log('Existing user:', existingUser);
-        //     if (!existingUser || !existingUser.emailVerified) {
-        //         console.log('Access Denied: Email not verified');
-        //         return false;
-        //     }
-        //     return true;
-        // }
-        // ,
+        async signIn({ user, account }) {
+            if(account?.provider !== "credentials"){
+                return true
+            }
+            const existingUser = await getUserById(user.id as string)
+            if(!existingUser?.emailVerified){
+                return false
+            }
+           
+            return true;
+        },
         async session({ token, session }) {
         console.log("hello", token, session)
             if (token.sub && session.user) {
