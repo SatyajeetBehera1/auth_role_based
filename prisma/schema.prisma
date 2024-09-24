@@ -12,6 +12,11 @@ datasource db {
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
+
+enum UserRoles {
+  ADMIN
+  USER
+}
 // Define your models here
 model User {
   id            String    @id @default(cuid())
@@ -19,6 +24,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map("email_verified")
   image         String?
+  role          UserRoles @default(USER)
   password      String?
   accounts      Account[]
  
@@ -42,5 +48,13 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@unique([provider, providerAccountId])
-  @@map("accounts")
+  // @@map("accounts")
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  email     String
+  token     String   @unique
+  expires DateTime
+  @@unique([email, token]) // only unique token for specific email
 }
