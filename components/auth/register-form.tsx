@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "../ui/input";
 import { FormError } from "../form-error";
-import { FormSuccess } from "../form-sucess";
+import { FormSuccess } from "../form-success";
 import { register } from "@/actions/register";
 
 export const RegisterForm = () => {
