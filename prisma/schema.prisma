@@ -12,11 +12,12 @@ datasource db {
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
-
+// Define your models Role
 enum UserRoles {
   ADMIN
   USER
 }
+
 // Define your models here
 model User {
   id            String    @id @default(cuid())
